@@ -6,4 +6,3 @@ if [ ! -d $contentDir ]; then
     sudo chown -R www-data:www-data $contentDir
 fi
 docker-compose up -d
-²
