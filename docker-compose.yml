@@ -1,0 +1,42 @@
+version: '3.3'
+services:  
+  # ==============================================================
+  # here we are building image from the .docker/Dockerfile
+  # this image is starting from a official php-apache docker
+  # and creating host dashboard-pmt
+  blog:
+    container_name: wpbackend
+    image: wordpress:latest
+    restart: always
+    expose:
+        - 80
+        - 443
+    # VIRTUAL_HOST should be only the domain (without http://)
+    # by example : www.example.com or sub.domain.fr
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST:?set it in .env}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST:?set it in .env}
+      - LETSENCRYPT_EMAIL=frederick@tyteca.net
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST:?set it in .env}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER:?set it in .env}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD:?set it in .env}
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME:?set it in .env}
+      - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX:?set it in .env}
+      - WORDPRESS_AUTH_KEY=${WORDPRESS_AUTH_KEY:?set it in .env}
+      - WORDPRESS_SECURE_AUTH_KEY=${WORDPRESS_SECURE_AUTH_KEY:?set it in .env}
+      - WORDPRESS_LOGGED_IN_KEY=${WORDPRESS_LOGGED_IN_KEY:?set it in .env}
+      - WORDPRESS_NONCE_KEY=${WORDPRESS_NONCE_KEY:?set it in .env}
+      - WORDPRESS_AUTH_SALT=${WORDPRESS_AUTH_SALT:?set it in .env}
+      - WORDPRESS_SECURE_AUTH_SALT=${WORDPRESS_SECURE_AUTH_SALT:?set it in .env}
+      - WORDPRESS_LOGGED_IN_SALT=${WORDPRESS_LOGGED_IN_SALT:?set it in .env}
+      - WORDPRESS_NONCE_SALT=${WORDPRESS_NONCE_SALT:?set it in .env}
+      - WORDPRESS_FS_METHOD=direct
+    volumes:
+      - ./wp-content:/var/www/html/wp-content
+    networks:
+      - nginx-proxy
+    
+
+networks:
+  nginx-proxy:
+    external: true
